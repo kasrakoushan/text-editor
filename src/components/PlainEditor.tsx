@@ -1,4 +1,5 @@
 import { useState } from "react";
+import styles from './PlainEditor.module.css';
 
 export function PlainEditor() {
   const [text, setText] = useState('');
@@ -26,10 +27,11 @@ export function PlainEditor() {
 
   console.log(lastChar);
 
-  return <div>
-    <textarea onChange={handleChange} />
+  return <div className={styles.container}>
+    <h1 className={styles.header}>crusty the trusty text editor</h1>
+    <textarea className={styles.textArea} onInput={handleChange} />
     {showChar && (
-      <div className="floating-char" style={{ animation: `floatDown 2s ease forwards` }}>
+      <div className={styles.shrinkingChar}>
         {lastChar}
       </div>
     )}

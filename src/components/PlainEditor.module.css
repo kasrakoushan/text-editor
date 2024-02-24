@@ -1,0 +1,68 @@
+
+@keyframes floatDown {
+  from {
+      top: 0;
+      opacity: 1;
+  }
+  to {
+      top: 100px; /* Adjust this value as needed */
+      opacity: 0;
+  }
+}
+
+
+@keyframes shrink {
+  from {
+      font-size: 100vw;
+  }
+  to {
+      font-size: 0;
+      opacity: 0; /* Fades out the letter as it shrinks */
+  }
+}
+
+.floatingChar {
+  position: absolute;
+  top: 0;
+  font-size: 50px;
+  left: 50%;
+  transform: translateX(-50%);
+  opacity: 1;
+  animation: floatDown 1s ease forwards;
+}
+
+.shrinkingChar {
+  font-size: 100vw; /* Initially as big as the viewport width */
+  animation: shrink 1s ease forwards; /* Animation named 'shrink' that lasts 3 seconds */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100vw;
+  height: 100vh;
+  padding: 2em;
+}
+
+.textArea {
+  width: 100%;
+  height: 100%;
+  padding: 1em;
+  border: none;
+  /* box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1); */
+}
+
+.textArea:focus {
+  outline: none;
+}
+
+.header {
+  font-family: monospace;
+}

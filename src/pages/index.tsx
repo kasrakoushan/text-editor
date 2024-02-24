@@ -9,7 +9,6 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   return <div>
-    <h1>my text editor</h1>
     <PlainEditor></PlainEditor>
   </div>
 }
