@@ -1,5 +1,5 @@
-import { $getRoot, $getSelection } from 'lexical';
-import { useEffect } from 'react';
+import { $getRoot, $getSelection, EditorState } from 'lexical';
+import { useEffect, useState } from 'react';
 
 import { LexicalComposer } from '@lexical/react/LexicalComposer';
 import { PlainTextPlugin } from '@lexical/react/LexicalPlainTextPlugin';
@@ -11,7 +11,9 @@ import LexicalErrorBoundary from '@lexical/react/LexicalErrorBoundary';
 
 const theme = {
   // Theme styling goes here
-
+  ltr: 'ltr',
+  rtl: 'rtl',
+  paragraph: 'editor-paragraph',
 }
 
 // Lexical React plugins are React components, which makes them
@@ -36,12 +38,38 @@ function onError(error) {
   console.error(error);
 }
 
-export function Editor() {
+function MyOnChangePlugin({ onChange }) {
+  const [editor] = useLexicalComposerContext();
+
+  useEffect(() => {
+    return editor.registerUpdateListener((event) => {
+      // console.log(`update`);
+      // console.log(`prev:`);
+      // console.log(e.prevEditorState);
+      // console.log(`next:`);
+      // console.log(e.editorState);
+      // console.log(`tags`)
+      // console.log(e.tags);
+
+      console.log(event.dirtyElements);
+    })
+
+  }, [editor, onChange]);
+
+  return null;
+}
+
+export function LexEditor() {
   const initialConfig = {
     namespace: 'MyEditor',
     theme,
     onError,
   };
+
+  const [editorState, setEditorState] = useState<EditorState>();
+  function onChange(editorState: EditorState) {
+    setEditorState(editorState);
+  }
 
   return (
     <LexicalComposer initialConfig={initialConfig}>
@@ -52,6 +80,7 @@ export function Editor() {
       />
       <HistoryPlugin />
       <MyCustomAutoFocusPlugin />
+      <MyOnChangePlugin onChange={onChange} />
     </LexicalComposer>
   );
 }
