@@ -5,7 +5,7 @@
       opacity: 1;
   }
   to {
-      top: 100px; /* Adjust this value as needed */
+      top: 100px;
       opacity: 0;
   }
 }
@@ -17,7 +17,32 @@
   }
   to {
       font-size: 0;
+      top: 0;
+      left: 0;
       /* opacity: 0; */
+  }
+}
+
+@keyframes spin {
+  0% { transform:rotate(0deg); }
+  100% { transform:rotate(1000deg); }
+}
+
+@keyframes curlyPath {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  25% {
+      transform: translate(150px, 150px) rotate(90deg);
+  }
+  50% {
+      transform: translate(300px, 0) rotate(180deg);
+  }
+  75% {
+      transform: translate(150px, -150px) rotate(270deg);
+  }
+  100% {
+      transform: translate(0, 0) rotate(360deg);
   }
 }
 
@@ -33,12 +58,32 @@
 
 .shrinkingChar {
   font-size: 100vw; /* Initially as big as the viewport width */
-  animation: shrink 1s ease forwards; /* Animation named 'shrink' that lasts 3 seconds */
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
+  animation: shrink 1s ease forwards;
+}
+
+.shrinkAndSpinChar {
+  font-size: 100vw; /* Initially as big as the viewport width */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  animation: shrink 1s ease forwards, spin 1s ease forwards;
+}
+
+.curlyChar {
+  font-size: 100vw; /* Initially as big as the viewport width */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  animation: shrink 1s ease forwards, spin 1s ease forwards, curlyPath 1s infinite;
 }
 
 .container {
@@ -65,4 +110,14 @@
 
 .header {
   font-family: monospace;
+}
+
+.checkbox {
+  display: flex;
+  padding: 0.5em;
+  align-items: center;
+}
+
+.checkbox > * {
+  margin: 0.5em;
 }
