@@ -17,7 +17,7 @@
   }
   to {
       font-size: 0;
-      opacity: 0; /* Fades out the letter as it shrinks */
+      /* opacity: 0; */
   }
 }
 
