@@ -1,43 +1,87 @@
 import { useState, useEffect } from "react";
 import styles from './PlainEditor.module.css';
 
-interface CharAnimation {
+interface UserKeyPress {
   id: number;
   char: string;
+  selectionStart: number;
+}
+
+const LINE_WIDTH = 92;
+const ANIMATION_DURATION = 1000;
+
+function useKeyPressAndPosition(callback: (keyPressed: string, cursorPosition: number) => void) {
+  const [keyPressed, setKeyPressed] = useState('');
+  const [cursorPosition, setCursorPosition] = useState(0);
+  const [keyProcessed, setKeyProcessed] = useState(false);
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    setKeyPressed(event.key);
+    setKeyProcessed(false);
+  };
+
+  const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (!keyProcessed) {
+      setCursorPosition(event.target.selectionStart);
+      setKeyProcessed(true);
+    }
+  };
+
+  useEffect(() => {
+    if (keyPressed && keyProcessed) {
+      // Execute the callback function
+      callback(keyPressed, cursorPosition);
+
+      // Reset the state if needed
+      setKeyPressed('');
+      setCursorPosition(0);
+      setKeyProcessed(false);
+    }
+  }, [keyPressed, keyProcessed, cursorPosition, callback]);
+
+  return { handleKeyDown, handleInput };
 }
 
 export function PlainEditor() {
-  const [text, setText] = useState('');
-  const [animationQueue, setAnimationQueue] = useState<CharAnimation[]>([]);
-  const [nextId, setNextId] = useState(0);
   const [spin, setSpin] = useState(false);
   const [curl, setCurl] = useState(false);
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-    const newValue = event.target.value;
-    setText(newValue);
+  const [text, setText] = useState('');
+  const [animationQueue, setAnimationQueue] = useState<UserKeyPress[]>([]);
+  const [nextId, setNextId] = useState(0);
 
-    if (newValue.length > text.length) {
-      const newChar = newValue.slice(-1);
-
+  const { handleInput, handleKeyDown } = useKeyPressAndPosition((keyPressed, cursorPosition) => {
+    if (keyPressed.length === 1) {
+      const curId = nextId;
       setAnimationQueue((prevQueue) => [
         ...prevQueue,
-        { id: nextId, char: newChar }
+        {
+          id: nextId,
+          char: keyPressed,
+          selectionStart: cursorPosition
+        }
       ]);
-      setNextId(id => id + 1);
+      setNextId(nextId + 1);
     } else {
+      // handle backspace and so on
     }
-  }
+  });
 
   useEffect(() => {
-    if (animationQueue.length > 0) {
-      const timer = setTimeout(() => {
-        // Remove the first character from the queue after its animation completes
-        setAnimationQueue((prevQueue) => prevQueue.slice(1));
-      }, 2000); // Duration of the animation
+    // TODO: clean the timeout
+    const timer = setTimeout(() => {
+      if (animationQueue.length > 0) {
+        const update = animationQueue[0];
+        setText(
+          text.slice(0, update.selectionStart) +
+          update.char +
+          text.slice(update.selectionStart)
+        );
+        setAnimationQueue(animationQueue.slice(1));
+      }
+    }, ANIMATION_DURATION - 500);
 
-      return () => clearTimeout(timer);
-    }
+    return () => clearTimeout(timer);
   }, [animationQueue]);
 
   return <div className={styles.container}>
@@ -50,9 +94,16 @@ export function PlainEditor() {
       <input type="checkbox" checked={curl} onChange={() => setCurl(!curl)} />
       curl
     </label>
-    <textarea className={styles.textArea} onInput={handleChange} />
+    <textarea
+      className={styles.textArea}
+      onInput={handleInput}
+      onKeyDown={handleKeyDown}
+      value={text}
+    />
     {animationQueue.map((item) => (
-      <div key={item.id} className={spin ? styles.shrinkAndSpinChar : (curl ? styles.curlyChar : styles.shrinkingChar)}>
+      <div key={item.id} className={
+        spin ? styles.shrinkAndSpinChar :
+          (curl ? styles.curlyChar : styles.shrinkingChar)}>
         {item.char}
       </div>
     ))
