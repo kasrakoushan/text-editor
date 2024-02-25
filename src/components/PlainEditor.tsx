@@ -117,7 +117,20 @@ export function PlainEditor() {
       ]);
       setNextId(id => id + 1);
     } else if (newValue.length < text.length) {
-      const oldChar = newValue.slice(event.target.selectionStart, event.target.selectionEnd);
+      const oldChar = text.slice(event.target.selectionStart, event.target.selectionEnd + 1);
+      const animationName = `animation-${nextId}`;
+      const animationStyle = animateProperty(animationName);
+
+      const { top, left } = calculatePosition({ textAreaLeft, textAreaTop, textAreaWidth, position });
+
+      // add to stylesheet
+      addStyleElement(popOutKeyframe({ top, left, name: animationName }));
+
+      setAnimationQueue((prevQueue) => [
+        ...prevQueue,
+        { id: nextId, char: oldChar, animationStyle }
+      ]);
+      setNextId(id => id + 1);
     }
   }
 
