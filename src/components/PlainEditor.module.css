@@ -10,7 +10,7 @@
   }
 }
 
-
+/* 
 @keyframes shrink {
   from {
       font-size: 100vw;
@@ -19,9 +19,8 @@
       font-size: 0;
       top: 0;
       left: 0;
-      /* opacity: 0; */
   }
-}
+} */
 
 @keyframes spin {
   0% { transform:rotate(0deg); }
@@ -46,7 +45,12 @@
   }
 }
 
-.floatingChar {
+.charContainer {
+  /* font-family: monospace; */
+  z-index: 2;
+}
+
+.fallingChar {
   position: absolute;
   top: 0;
   font-size: 50px;
@@ -57,13 +61,9 @@
 }
 
 .shrinkingChar {
-  font-size: 100vw; /* Initially as big as the viewport width */
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 2;
-  animation: shrink 1s ease forwards;
+  /* removing here to include it in the typescript */
+  /* animation: shrink 1s ease forwards; */
 }
 
 .shrinkAndSpinChar {
@@ -72,7 +72,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
   animation: shrink 1s ease forwards, spin 1s ease forwards;
 }
 
@@ -82,7 +81,6 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 2;
   animation: shrink 1s ease forwards, spin 1s ease forwards, curlyPath 1s infinite;
 }
 
@@ -94,6 +92,7 @@
   width: 100vw;
   height: 100vh;
   padding: 2em;
+  font-family: monospace;
 }
 
 .textArea {
@@ -101,15 +100,12 @@
   height: 100%;
   padding: 1em;
   border: none;
+  font-size: 14px;
   /* box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1); */
 }
 
 .textArea:focus {
   outline: none;
-}
-
-.header {
-  font-family: monospace;
 }
 
 .checkbox {
