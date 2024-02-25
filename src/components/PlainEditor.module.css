@@ -61,11 +61,7 @@
 }
 
 .shrinkingChar {
-  font-size: 100vw; /* Initially as big as the viewport width */
   position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
   /* removing here to include it in the typescript */
   /* animation: shrink 1s ease forwards; */
 }
@@ -96,6 +92,7 @@
   width: 100vw;
   height: 100vh;
   padding: 2em;
+  font-family: monospace;
 }
 
 .textArea {
@@ -109,10 +106,6 @@
 
 .textArea:focus {
   outline: none;
-}
-
-.header {
-  font-family: monospace;
 }
 
 .checkbox {

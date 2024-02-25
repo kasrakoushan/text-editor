@@ -17,33 +17,71 @@ function addStyleElement(content: string) {
 function shrinkToPositionKeyframe({ top, left, name }: { top: number, left: number, name: string }) {
   return `
   @keyframes ${name} {
-    from {
-        font-size: 100vw;
+    0% {
+      top: 50%;
+      left: 50%;
+      font-size: 100vw;
+      transform: translate(-50%, -50%);
     }
-    to {
-        font-size: 0;
-        top: ${top}px;
-        left: ${left}px;
+    100% {
+      top: ${top}px;
+      left: ${left}px;
+      font-size: 0;
+      transform: translate(0, 0);
     }
   }
   `;
 }
 
-const FONT_SIZE = 14;
+function popOutKeyframe({ top, left, name }: { top: number, left: number, name: string }) {
+  return `
+  @keyframes ${name} {
+    0% {
+      top: ${top}px;
+      left: ${left}px;
+      font-size: 0;
+      transform: rotate(0deg));
+    }
+    100% {
+      top: 100%;
+      left: 100%;
+      font-size: 100vw;
+      transform: rotate(1800deg);
+    }
+  }
+  `;
+}
 
-const RATIO = 0.8;
+function animateProperty(name: string) {
+  return `${name} 0.75s ease forwards`;
+}
+
+const FONT_WIDTH = 8.5;
+const FONT_HEIGHT = 17;
+const TEXTAREA_PADDING = 14;
+const ANIMATION_DURATION = 750;
 
 function calculatePosition(
-  { textAreaTop, textAreaLeft, textAreaWidth }: { textAreaTop: number, textAreaLeft: number, textAreaWidth: number },
-  currentText: string): {
+  { textAreaTop,
+    textAreaLeft,
+    textAreaWidth,
+    position
+  }: {
+    textAreaTop: number,
+    textAreaLeft: number,
+    textAreaWidth: number,
+    position: number
+  }): {
     top: number, left: number
   } {
   console.log(`top: ${textAreaTop}, left: ${textAreaLeft}, width: ${textAreaWidth}`);
-  const textWidth = currentText.length * FONT_SIZE;
-  const numLines = Math.floor(textWidth / textAreaWidth);
-  const top = textAreaTop + numLines * FONT_SIZE;
-  const left = textAreaLeft + (textWidth % textAreaWidth);
+  const textWidth = position * FONT_WIDTH;
+  const availableWidth = textAreaWidth - TEXTAREA_PADDING * 2;
+  const numLines = Math.floor(textWidth / availableWidth);
+  const top = textAreaTop + TEXTAREA_PADDING + numLines * FONT_HEIGHT;
+  const left = textAreaLeft + TEXTAREA_PADDING + (textWidth % availableWidth);
 
+  console.log(`going to land at: top ${top}, left ${left}`);
   return { top, left };
 }
 
@@ -51,8 +89,6 @@ export function PlainEditor() {
   const [text, setText] = useState('');
   const [animationQueue, setAnimationQueue] = useState<CharAnimation[]>([]);
   const [nextId, setNextId] = useState(0);
-  const [spin, setSpin] = useState(false);
-  const [curl, setCurl] = useState(false);
   const textAreaRef = useRef(null);
 
   // text area
@@ -60,16 +96,17 @@ export function PlainEditor() {
   const [textAreaLeft, setTextAreaLeft] = useState(0);
   const [textAreaWidth, setTextAreaWidth] = useState(0);
 
-  const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+  const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const newValue = event.target.value;
+    const position = event.target.selectionStart - 1;
     setText(newValue);
 
     if (newValue.length > text.length) {
-      const newChar = newValue.slice(-1);
+      const newChar = newValue.slice(position, position + 1);
       const animationName = `animation-${nextId}`;
-      const animationStyle = `${animationName} 1s ease forwards`;
+      const animationStyle = animateProperty(animationName);
 
-      const { top, left } = calculatePosition({ textAreaLeft, textAreaTop, textAreaWidth }, text);
+      const { top, left } = calculatePosition({ textAreaLeft, textAreaTop, textAreaWidth, position });
 
       // add to stylesheet
       addStyleElement(shrinkToPositionKeyframe({ top, left, name: animationName }));
@@ -79,16 +116,17 @@ export function PlainEditor() {
         { id: nextId, char: newChar, animationStyle }
       ]);
       setNextId(id => id + 1);
-    } else {
+    } else if (newValue.length < text.length) {
+      const oldChar = newValue.slice(event.target.selectionStart, event.target.selectionEnd);
     }
   }
+
 
   useEffect(() => {
     if (animationQueue.length > 0) {
       const timer = setTimeout(() => {
-        // Remove the first character from the queue after its animation completes
         setAnimationQueue((prevQueue) => prevQueue.slice(1));
-      }, 1000); // Duration of the animation
+      }, ANIMATION_DURATION);
 
       return () => clearTimeout(timer);
     }
@@ -104,17 +142,9 @@ export function PlainEditor() {
   })
 
   return <div className={styles.container}>
-    <h1 className={styles.header}>crusty the trusty text editor</h1>
-    <p>(checkboxes don't do anything atm)</p>
-    <label className={styles.checkbox}>
-      <input type="checkbox" checked={spin} onChange={() => setSpin(!spin)} />
-      spin
-    </label>
-    <label className={styles.checkbox}>
-      <input type="checkbox" checked={curl} onChange={() => setCurl(!curl)} />
-      curl
-    </label>
-    <textarea ref={textAreaRef} className={styles.textArea} onInput={handleChange} />
+    <h1>crusty the trusty text editor</h1>
+    <p>start typing...</p>
+    <textarea ref={textAreaRef} className={styles.textArea} onInput={handleInput} />
     {animationQueue.map((item) => (
       <div key={item.id} className={styles.charContainer}>
         <span className={styles.shrinkingChar} style={{ animation: item.animationStyle }}>
