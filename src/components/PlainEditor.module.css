@@ -10,21 +10,45 @@
   }
 }
 
-/* 
-@keyframes shrink {
-  from {
-      font-size: 100vw;
-  }
-  to {
-      font-size: 0;
-      top: 0;
-      left: 0;
-  }
-} */
+@keyframes tilt-n-move-shaking {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(5px, 5px) rotate(5deg); }
+  50% { transform: translate(0, 0) rotate(0eg); }
+  75% { transform: translate(-5px, 5px) rotate(-5deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
 
-@keyframes spin {
+.periodContainer {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  text-align: center;
+
+  .period {
+    font-family: Impact;
+    font-size: 25vw;
+    color: red;
+    animation: tilt-n-move-shaking 0.15s infinite;
+  }
+}
+
+@keyframes spinTenTimes {
   0% { transform:rotate(0deg); }
   100% { transform:rotate(1000deg); }
+}
+
+@keyframes spinOnce {
+  0% { transform:rotate(0deg); }
+  100% { transform:rotate(360deg); }
+}
+
+.spinOnce {
+  animation: spinOnce 0.5s ease-in-out;
 }
 
 @keyframes curlyPath {
@@ -72,7 +96,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: shrink 1s ease forwards, spin 1s ease forwards;
+  animation: shrink 1s ease forwards, spinTenTimes 1s ease forwards;
 }
 
 .curlyChar {
@@ -81,7 +105,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  animation: shrink 1s ease forwards, spin 1s ease forwards, curlyPath 1s infinite;
+  animation: shrink 1s ease forwards, spinTenTimes 1s ease forwards, curlyPath 1s infinite;
 }
 
 .container {
@@ -101,12 +125,14 @@
   padding: 1em;
   border: none;
   font-size: 14px;
+  max-width: 500px;
+  max-height: 500px;
   /* box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1); */
 }
 
-.textArea:focus {
+/* .textArea:focus {
   outline: none;
-}
+} */
 
 .checkbox {
   display: flex;

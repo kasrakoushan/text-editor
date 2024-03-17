@@ -90,6 +90,8 @@ export function PlainEditor() {
   const [animationQueue, setAnimationQueue] = useState<CharAnimation[]>([]);
   const [nextId, setNextId] = useState(0);
   const textAreaRef = useRef(null);
+  const [spinning, setSpinning] = useState(false);
+  const [period, setPeriod] = useState(false);
 
   // text area
   const [textAreaTop, setTextAreaTop] = useState(0);
@@ -146,6 +148,26 @@ export function PlainEditor() {
   }, [animationQueue]);
 
   useEffect(() => {
+    if (spinning) {
+      const id = setTimeout(() => {
+        setSpinning(false);
+      }, 500);
+
+      return () => clearTimeout(id);
+    }
+  }, [spinning]);
+
+  useEffect(() => {
+    if (period) {
+      const id = setTimeout(() => {
+        setPeriod(false);
+      }, 500);
+
+      return () => clearTimeout(id);
+    }
+  }, [period]);
+
+  useEffect(() => {
     if (textAreaRef.current) {
       const { x, y, width } = (textAreaRef.current as any).getBoundingClientRect();
       setTextAreaTop(y);
@@ -154,10 +176,19 @@ export function PlainEditor() {
     }
   })
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      setSpinning(true);
+    } else if (event.key === '.') {
+      setPeriod(true);
+    }
+  }
+
   return <div className={styles.container}>
     <h1>crusty the trusty text editor</h1>
     <p>start typing...</p>
-    <textarea ref={textAreaRef} className={styles.textArea} onInput={handleInput} />
+    {period && <div className={styles.periodContainer}><div className={styles.period}>PERIODT</div></div>}
+    <textarea ref={textAreaRef} className={`${styles.textArea} ${spinning ? styles.spinOnce : ""}`} onInput={handleInput} onKeyDown={handleKeyDown} />
     {animationQueue.map((item) => (
       <div key={item.id} className={styles.charContainer}>
         <span className={styles.shrinkingChar} style={{ animation: item.animationStyle }}>
