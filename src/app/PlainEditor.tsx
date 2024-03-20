@@ -187,8 +187,9 @@ export function PlainEditor() {
   }
 
   return <div className={styles.container}>
-    <h1>crusty the trusty text editor</h1>
+    <h1>silly text editor</h1>
     <p>start typing...</p>
+    <br></br>
     {period && <div className={styles.periodContainer}><div className={styles.period}>PERIODT</div></div>}
     <textarea ref={textAreaRef} className={`${styles.textArea} ${spinning ? styles.spinOnce : ""}`} onInput={handleInput} onKeyDown={handleKeyDown} />
     {animationQueue.map((item) => (
