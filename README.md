@@ -1,8 +1,8 @@
 ## Text editor todo's
 
-- factor out (and rename) `PlainEditor.tsx` into smaller modules because it's very unwieldy
-- add more silly features
-- consider refactoring to use Slate so we can know the exact position of the cursor
+- [x] factor out (and rename) `PlainEditor.tsx` into smaller modules because it's very unwieldy
+- [ ] add more silly features
+- [ ] consider refactoring to use Slate so we can know the exact position of the cursor
 
 ## Boilerplate docs
 
