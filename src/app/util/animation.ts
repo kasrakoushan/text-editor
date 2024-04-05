@@ -13,12 +13,14 @@ export function shrinkToPositionKeyframe({ top, left, name }: { top: number, lef
       left: 50%;
       font-size: 100vw;
       transform: translate(-50%, -50%);
+      opacity: 0.6;
     }
     100% {
       top: ${top}px;
       left: ${left}px;
       font-size: 0;
       transform: translate(0, 0);
+      opacity: 1;
     }
   }
   `;
@@ -30,7 +32,7 @@ export function popOutKeyframe({ top, left, name }: { top: number, left: number,
     0% {
       top: ${top}px;
       left: ${left}px;
-      font-size: 0;
+      font-size: 14px;
       transform: rotate(0deg));
     }
     100% {

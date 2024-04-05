@@ -72,6 +72,7 @@
 .charContainer {
   /* font-family: monospace; */
   z-index: 2;
+  font-family: serif;
 }
 
 .fallingChar {
