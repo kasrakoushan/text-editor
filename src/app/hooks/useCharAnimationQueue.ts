@@ -9,7 +9,7 @@ interface CharAnimation {
   animationStyle: string;
 }
 
-export function useAnimationQueue(
+export function useCharAnimationQueue(
   { text, setText, textAreaRef}: 
   { text: string, setText: (text: string) => void, textAreaRef: React.RefObject<HTMLTextAreaElement>}
 ) {
@@ -33,7 +33,7 @@ export function useAnimationQueue(
       const animationName = `animation-${nextId}`;
       const animationStyle = animateProperty(animationName);
 
-      const { top, left } = calculatePosition({ textAreaLeft, textAreaTop, textAreaWidth, position });
+      const { top, left } = calculatePosition({ text, textAreaLeft, textAreaTop, textAreaWidth, position });
 
       // add to stylesheet
       addStyleElement(shrinkToPositionKeyframe({ top, left, name: animationName }));
@@ -46,10 +46,11 @@ export function useAnimationQueue(
     } else if (newValue.length < text.length) {
       // character deletion
       const oldChar = text.slice(event.target.selectionStart, event.target.selectionEnd + 1);
+      console.log(`old char: ${oldChar}`);
       const animationName = `animation-${nextId}`;
       const animationStyle = animateProperty(animationName);
 
-      const { top, left } = calculatePosition({ textAreaLeft, textAreaTop, textAreaWidth, position });
+      const { top, left } = calculatePosition({ text, textAreaLeft, textAreaTop, textAreaWidth, position });
 
       // add to stylesheet
       addStyleElement(popOutKeyframe({ top, left, name: animationName }));

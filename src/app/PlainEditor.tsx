@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import styles from './PlainEditor.module.css';
-import { useAnimationQueue } from "./hooks/useAnimationQueue";
+import { useCharAnimationQueue } from "./hooks/useCharAnimationQueue";
 
 export function PlainEditor() {
   const [text, setText] = useState('');
@@ -11,7 +11,7 @@ export function PlainEditor() {
   const [period, setPeriod] = useState(false);
 
 
-  const { animationQueue, handleInput } = useAnimationQueue({ text, setText, textAreaRef });
+  const { animationQueue, handleInput } = useCharAnimationQueue({ text, setText, textAreaRef });
 
   useEffect(() => {
     if (spinning) {

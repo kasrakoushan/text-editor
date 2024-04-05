@@ -31,7 +31,7 @@
 
   .period {
     font-family: Impact;
-    font-size: 10vw;
+    font-size: 30vw;
     color: red;
     animation: tilt-n-move-shaking 0.15s infinite;
   }
