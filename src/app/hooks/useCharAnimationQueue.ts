@@ -46,7 +46,6 @@ export function useCharAnimationQueue(
     } else if (newValue.length < text.length) {
       // character deletion
       const oldChar = text.slice(event.target.selectionStart, event.target.selectionEnd + 1);
-      console.log(`old char: ${oldChar}`);
       const animationName = `animation-${nextId}`;
       const animationStyle = animateProperty(animationName);
 
